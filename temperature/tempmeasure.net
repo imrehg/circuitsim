@@ -1,0 +1,44 @@
+**********************************************
+* Temperature measurement circuit with LM335 *
+**********************************************
+
+.include op27b.cir
+
+.PARAM RG=10k
+.PARAM RF=100k
+
+* Arduino 5V out
+VCC 99 0 4.98
+
+* Voltage divider for reference
+R1 99 1 560
+R2 1 0 680
+
+* Measurement and amplification circuit
+R3 1 2 RG
+R4 2 3 RF
+R5 3 0 10k
+R6 99 4 1k
+R7 4 5 RG
+R8 5 0 RF
+X1 5 2 99 0 3 OP27B
+D1 0 4 DLM335
+
+* Modeling the LM335 with Zener diode + manually set breadown voltage
+* 25 C => 298.2K => 2.982V
+.model DLM335 D ( BV=2.982 IBV=2m )
+
+* Operating point
+.OP
+
+** Automatation
+.control 
+set filetype=ascii
+run
+* print V(1) V(3)
+print  V(1) V(2) V(3) V(4) V(5)
+.endc
+
+.END
+
+
